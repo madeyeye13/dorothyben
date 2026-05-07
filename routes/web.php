@@ -25,20 +25,20 @@ use Illuminate\Support\Facades\Route;
 | Public Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn() => app(Welcome::class))->name('home');
-Route::get('/rsvp', fn() => app(RsvpForm::class))->name('rsvp');
-Route::get('/our-story', fn() => app(OurStory::class))->name('our-story');
-Route::get('/wishes', fn() => app(WishesPage::class))->name('wishes');
-Route::get('/gallery', fn() => app(GalleryPage::class))->name('gallery');
-Route::get('/memories', fn() => app(MemoriesPage::class))->name('memories');
-Route::get('/verify/{token}', fn() => app(VerifyGuest::class))->name('verify');
+Route::get('/', Welcome::class)->name('home');
+Route::get('/rsvp', RsvpForm::class)->name('rsvp');
+Route::get('/our-story', OurStory::class)->name('our-story');
+Route::get('/wishes', WishesPage::class)->name('wishes');
+Route::get('/gallery', GalleryPage::class)->name('gallery');
+Route::get('/memories', MemoriesPage::class)->name('memories');
+Route::get('/verify/{token}', VerifyGuest::class)->name('verify');
 
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/admin/login', fn() => app(Login::class))->name('admin.login');
+Route::get('/admin/login', Login::class)->name('admin.login');
 
 Route::get('/admin/logout', function () {
     Auth::logout();
@@ -49,13 +49,13 @@ Route::get('/admin/logout', function () {
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', fn() => redirect()->route('admin.dashboard'));
-    Route::get('/dashboard',  fn() => app(Dashboard::class))->name('dashboard');
-    Route::get('/guests',     fn() => app(GuestList::class))->name('guests');
-    Route::get('/wishes',     fn() => app(WishesManager::class))->name('wishes');
-    Route::get('/gallery',    fn() => app(GalleryManager::class))->name('gallery');
-    Route::get('/memories',   fn() => app(MemoriesManager::class))->name('memories');
-    Route::get('/accounts',   fn() => app(AccountManager::class))->name('accounts');
-    Route::get('/settings',   fn() => app(SiteSettings::class))->name('settings');
-    Route::get('/users',      fn() => app(UserManager::class))->name('users');
-    Route::get('/profile',    fn() => app(ChangePassword::class))->name('profile');
+    Route::get('/dashboard',  Dashboard::class)->name('dashboard');
+    Route::get('/guests',     GuestList::class)->name('guests');
+    Route::get('/wishes',     WishesManager::class)->name('wishes');
+    Route::get('/gallery',    GalleryManager::class)->name('gallery');
+    Route::get('/memories',   MemoriesManager::class)->name('memories');
+    Route::get('/accounts',   AccountManager::class)->name('accounts');
+    Route::get('/settings',   SiteSettings::class)->name('settings');
+    Route::get('/users',      UserManager::class)->name('users');
+    Route::get('/profile',    ChangePassword::class)->name('profile');
 });
