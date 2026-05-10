@@ -7,6 +7,7 @@ use App\Jobs\SendGuestRsvpEmail;
 use App\Models\Guest;
 use App\Models\GuestCompanion;
 use App\Models\SiteSetting;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -202,11 +203,24 @@ class RsvpForm extends Component
         SendGuestRsvpEmail::dispatch($guest->fresh(), $emailType);
         SendCoupleNotificationEmail::dispatch($guest->fresh(), $this->isEditing ? 'updated' : 'new');
 
-        // Generate QR for display (PNG base64)
+        // Generate and save QR code file — base64 only for page display, file URL for email
         if ($guest->attending === 'yes' && $guest->qr_token) {
-            $url          = route('verify', ['token' => $guest->qr_token]);
-            $qrPng        = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(250)->margin(2)->generate($url);
-            $this->qrCodeSvg = base64_encode($qrPng); // reusing property as base64
+            $url      = route('verify', ['token' => $guest->qr_token]);
+            $qrPath   = 'qrcodes/' . $guest->qr_token . '.png';
+            $disk     = \Illuminate\Support\Facades\Storage::disk('public');
+
+            $qrPng = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+                ->size(300)
+                ->margin(2)
+                ->generate($url);
+
+            // Save file for email use
+            if (!$disk->exists($qrPath)) {
+                $disk->put($qrPath, $qrPng);
+            }
+
+            // base64 for on-page display and download link
+            $this->qrCodeSvg = base64_encode($qrPng);
         }
 
         $this->submitted = true;

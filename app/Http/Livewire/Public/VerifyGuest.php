@@ -11,16 +11,14 @@ use Livewire\Component;
 #[Layout('layouts.public')]
 class VerifyGuest extends Component
 {
-    public ?Guest $guest    = null;
-    public bool   $valid    = false;
-    public bool   $used     = false;
-    public bool   $isVenue  = false; // true when ?check_in=1 is in URL
-
-    // Check-in PIN flow
+    public ?Guest $guest      = null;
+    public bool   $valid      = false;
+    public bool   $used       = false;
     public bool   $showPinForm  = false;
     public string $pin          = '';
     public bool   $pinError     = false;
     public bool   $checkedInNow = false;
+    public bool   $hasPin       = false;
 
     #[Locked]
     public string $token = '';
@@ -34,8 +32,8 @@ class VerifyGuest extends Component
             return;
         }
 
-        $this->token   = $token;
-        $this->isVenue = request()->boolean('check_in');
+        $this->token  = $token;
+        $this->hasPin = !empty(SiteSetting::get('venue_pin'));
 
         $guest = Guest::where('qr_token', trim($token))
                       ->where('attending', 'yes')
@@ -49,23 +47,20 @@ class VerifyGuest extends Component
         $this->valid = true;
         $this->guest = $guest;
         $this->used  = $guest->qr_used;
+    }
 
-        // Only auto-mark used if venue mode AND no PIN is required
-        // (PIN flow is handled via submitPin)
-        if ($this->isVenue) {
-            $venuePin = SiteSetting::get('venue_pin');
-            if (!$venuePin) {
-                // No PIN set — mark immediately in venue mode
-                if (!$guest->qr_used) {
-                    $guest->update(['qr_used' => true, 'qr_used_at' => now()]);
-                    $this->checkedInNow = true;
-                }
-            } else {
-                // PIN required — show PIN form
-                $this->showPinForm = true;
-            }
+    // Guest or staff taps "Check In This Guest"
+    public function initiateCheckIn(): void
+    {
+        $venuePin = SiteSetting::get('venue_pin', '');
+
+        if (!$venuePin) {
+            // No PIN set — check in immediately
+            $this->performCheckIn();
+        } else {
+            // Show PIN prompt
+            $this->showPinForm = true;
         }
-        // Guest scanning their own code — view only, no marking
     }
 
     public function submitPin(): void
@@ -80,15 +75,28 @@ class VerifyGuest extends Component
 
         $this->pinError    = false;
         $this->showPinForm = false;
+        $this->performCheckIn();
+    }
 
-        if ($this->guest && !$this->guest->qr_used) {
+    private function performCheckIn(): void
+    {
+        if (!$this->guest) return;
+
+        if (!$this->guest->qr_used) {
             $this->guest->update(['qr_used' => true, 'qr_used_at' => now()]);
-            $this->guest   = $this->guest->fresh();
-            $this->used    = false; // was not used before
+            $this->guest        = $this->guest->fresh();
+            $this->used         = false;
             $this->checkedInNow = true;
         } else {
-            $this->used = true; // already checked in
+            $this->used = true;
         }
+    }
+
+    public function cancelPin(): void
+    {
+        $this->showPinForm = false;
+        $this->pin         = '';
+        $this->pinError    = false;
     }
 
     public function render()

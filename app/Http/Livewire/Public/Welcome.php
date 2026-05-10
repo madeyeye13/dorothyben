@@ -18,6 +18,8 @@ class Welcome extends Component
         return view('livewire.public.welcome', [
             'heroUrl'     => $heroUrl,
             'rsvpEnabled' => $rsvpEnabled,
+            'pageTitle' => 'Dorothy & Ben — ' . config('wedding.wedding_date'),
+            'metaDescription' => 'Join us as Dorothy & Ben celebrate their wedding on ' . config('wedding.wedding_date') . ' in ' . config('wedding.general_location') . '. RSVP now to confirm your attendance.',
         ]);
     }
 }

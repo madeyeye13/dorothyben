@@ -125,6 +125,8 @@ class MemoriesPage extends Component
             'active'       => $active,
             'memories'     => $memoriesRaw,
             'memoriesData' => $memoriesData,
+            'pageTitle' => 'Our Memories — Dorothy & Ben',
+            'metaDescription' => 'Share your favorite moments from Dorothy and Ben\'s wedding day with our guest upload gallery. Relive the celebration together.',
         ]);
     }
 }

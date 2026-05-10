@@ -63,6 +63,8 @@ class GalleryPage extends Component
             'images'      => $images,
             'imagesData'  => $imagesData,
             'needsPass'   => (bool) SiteSetting::get('gallery_password'),
+            'pageTitle' => 'Photo Gallery — Dorothy & Ben',
+            'metaDescription' => 'View the exclusive photo gallery from Dorothy and Ben\'s wedding celebration. Beautiful moments captured on their special day.',
         ]);
     }
 }

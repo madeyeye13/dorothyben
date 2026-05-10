@@ -74,6 +74,8 @@ class WishesPage extends Component
         return view('livewire.public.wishes-page', [
             'wishes'      => $wishes,
             'myReactions' => $myReactions,
+            'pageTitle' => 'Wishes & Blessings — Dorothy & Ben',
+            'metaDescription' => 'Leave a heartfelt wish, blessing, or message for Dorothy and Ben as they begin their married life.',
         ]);
     }
 }

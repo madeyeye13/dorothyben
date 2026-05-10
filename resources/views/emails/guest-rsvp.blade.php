@@ -108,20 +108,36 @@
         </div>
       </div>
 
-      {{-- QR Code as PNG image (not SVG) --}}
+      {{-- QR Code — saved as file, linked via public URL (base64 blocked by email clients) --}}
       @if($guest->qr_token)
       @php
-        $url       = route('verify', ['token' => $guest->qr_token]);
-        $qrPng     = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(200)->margin(2)->generate($url);
-        $qrBase64  = base64_encode($qrPng);
+        $url      = route('verify', ['token' => $guest->qr_token]);
+        $qrPath   = 'qrcodes/' . $guest->qr_token . '.png';
+        $disk     = \Illuminate\Support\Facades\Storage::disk('public');
+
+        // Generate and save QR file if it doesn't exist yet
+        if (!$disk->exists($qrPath)) {
+            $qrPng = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+                ->size(300)
+                ->margin(2)
+                ->generate($url);
+            $disk->put($qrPath, $qrPng);
+        }
+
+        $qrUrl = asset('storage/' . $qrPath);
       @endphp
       <div class="qr-section">
         <p style="font-family:Georgia;font-size:1rem;color:#0D0D0D;margin:0 0 16px;">Your Entry Pass</p>
-        <img src="data:image/png;base64,{{ $qrBase64 }}" alt="Entry QR Code" width="200" height="200">
+        <img src="{{ $qrUrl }}" alt="Entry QR Code" width="250" height="250"
+             style="display:block;margin:0 auto 16px;border:8px solid #fff;box-shadow:0 0 0 1px #E2D9C8;">
         <p style="font-family:Arial;font-size:0.8125rem;color:#6B6B6B;margin:0;">
           Present this QR code at the venue entrance for check-in.<br>
           <small style="color:#aaa;">Save this email or screenshot the QR code.</small>
         </p>
+        <a href="{{ $qrUrl }}" download="Dorothy-Ben-Entry-QR.png"
+           style="display:inline-block;margin-top:16px;padding:8px 20px;background:#C9A84C;color:#fff;font-family:Arial;font-size:12px;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">
+          Download QR Code
+        </a>
       </div>
       @endif
 

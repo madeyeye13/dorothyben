@@ -53,6 +53,10 @@ class GuestList extends Component
         if ($this->deleteId) {
             $guest = Guest::find($this->deleteId);
             if ($guest) {
+                if ($guest->qr_token) {
+                    \Illuminate\Support\Facades\Storage::disk('public')
+                        ->delete('qrcodes/' . $guest->qr_token . '.png');
+                }
                 $guest->companions()->delete();
                 $guest->delete();
                 $this->selected = array_filter($this->selected, fn($id) => $id != $this->deleteId);
@@ -80,6 +84,10 @@ class GuestList extends Component
     {
         $guests = Guest::whereIn('id', $this->selected)->get();
         foreach ($guests as $guest) {
+            if ($guest->qr_token) {
+                \Illuminate\Support\Facades\Storage::disk('public')
+                    ->delete('qrcodes/' . $guest->qr_token . '.png');
+            }
             $guest->companions()->delete();
             $guest->delete();
         }

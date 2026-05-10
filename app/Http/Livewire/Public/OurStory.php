@@ -20,6 +20,8 @@ class OurStory extends Component
         return view('livewire.public.our-story', [
             'accounts' => $accounts,
             'heroUrl'  => $heroUrl,
+            'pageTitle' => 'Our Story — Dorothy & Ben',
+            'metaDescription' => 'Read the beautiful love story of Dorothy and Ben, from their first meeting to their engagement and wedding day.',
         ]);
     }
 }
