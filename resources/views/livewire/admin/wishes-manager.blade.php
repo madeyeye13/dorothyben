@@ -1,52 +1,98 @@
 <div>
-    <div class="mb-8">
-        <h2 style="font-family: var(--font-serif); font-size: 1.75rem;">Wishes</h2>
-        <p class="text-sm mt-1" style="color: var(--color-muted);">Moderate and manage public wishes from well-wishers.</p>
-    </div>
-
-    <div class="admin-card border border-[var(--color-border)] bg-white overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full admin-table">
-                <thead>
-                    <tr style="background: #fafaf9; border-bottom: 1px solid var(--color-border);">
-                        <th class="text-left px-5 py-3 text-xs uppercase tracking-widest" style="color: var(--color-muted);">Name</th>
-                        <th class="text-left px-5 py-3 text-xs uppercase tracking-widest" style="color: var(--color-muted);">Message</th>
-                        <th class="text-left px-5 py-3 text-xs uppercase tracking-widest" style="color: var(--color-muted);">Status</th>
-                        <th class="text-left px-5 py-3 text-xs uppercase tracking-widest" style="color: var(--color-muted);">Date</th>
-                        <th class="px-5 py-3"></th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-[var(--color-border)]">
-                    @forelse($wishes as $wish)
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-3 text-sm font-medium">{{ $wish->name }}</td>
-                        <td class="px-5 py-3 text-sm max-w-sm" style="color: var(--color-muted);">
-                            {{ Str::limit($wish->message, 100) }}
-                        </td>
-                        <td class="px-5 py-3">
-                            <button wire:click="toggleApproval({{ $wish->id }})" class="text-xs px-2 py-1 transition-colors
-                                {{ $wish->approved ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'bg-red-50 text-red-600 hover:bg-red-100' }}">
-                                {{ $wish->approved ? '✓ Visible' : '✕ Hidden' }}
-                            </button>
-                        </td>
-                        <td class="px-5 py-3 text-xs" style="color: var(--color-muted);">{{ $wish->created_at->format('d M Y') }}</td>
-                        <td class="px-5 py-3">
-                            <button wire:click="confirmDelete({{ $wish->id }})" class="text-red-400 hover:text-red-600 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="px-5 py-16 text-center text-sm" style="color: var(--color-muted);">No wishes yet.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h2 style="font-family: var(--font-serif); font-size: 1.75rem;">Wishes</h2>
+            <p class="text-sm mt-1" style="color: var(--color-muted);">Moderate, approve and reply to wishes from guests.</p>
         </div>
-        <div class="px-5 py-4 border-t border-[var(--color-border)]">{{ $wishes->links() }}</div>
+        @if($pendingCount > 0)
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span class="text-xs text-amber-700 font-medium">{{ $pendingCount }} pending approval</span>
+        </div>
+        @endif
     </div>
 
+    {{-- Tabs --}}
+    <div class="flex gap-0 mb-6 border-b border-[var(--color-border)]">
+        @foreach(['pending' => 'Pending', 'approved' => 'Approved', 'all' => 'All'] as $tab => $label)
+        <button wire:click="$set('filterTab', '{{ $tab }}')"
+                class="px-5 py-2.5 text-sm border-b-2 transition-colors -mb-px
+                {{ $filterTab === $tab ? 'border-[var(--color-gold)] text-[var(--color-gold)] font-medium' : 'border-transparent text-[var(--color-muted)] hover:text-[var(--color-obsidian)]' }}">
+            {{ $label }}
+            @if($tab === 'pending' && $pendingCount > 0)
+            <span class="ml-1.5 px-1.5 py-0.5 text-xs bg-amber-100 text-amber-700">{{ $pendingCount }}</span>
+            @endif
+        </button>
+        @endforeach
+    </div>
+
+    <div class="space-y-4">
+        @forelse($wishes as $wish)
+        <div class="admin-card border bg-white p-5 {{ !$wish->approved ? 'border-amber-200 bg-amber-50/30' : 'border-[var(--color-border)]' }}" wire:key="wish-{{ $wish->id }}">
+            <div class="flex items-start justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                        <p class="text-sm font-medium" style="color: var(--color-gold);">{{ $wish->name }}</p>
+                        <span class="text-xs px-2 py-0.5 {{ $wish->approved ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }}">
+                            {{ $wish->approved ? '✓ Approved' : '⏳ Pending' }}
+                        </span>
+                        <span class="text-xs" style="color: var(--color-muted);">{{ $wish->created_at->diffForHumans() }}</span>
+                        <span class="text-xs" style="color: var(--color-muted);">· ❤️ {{ $wish->heart_count }} · 🎊 {{ $wish->congrats_count }}</span>
+                    </div>
+                    <p class="text-sm leading-relaxed" style="color: #3a3a3a;">"{{ $wish->message }}"</p>
+
+                    @if($wish->admin_reply)
+                    <div class="mt-3 pl-3 border-l-2 border-[var(--color-gold)]/40">
+                        <p class="text-xs uppercase tracking-widest mb-1" style="color: var(--color-gold);">Your reply</p>
+                        <p class="text-xs" style="color: var(--color-muted);">{{ $wish->admin_reply }}</p>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="flex flex-col gap-2 shrink-0">
+                    @if(!$wish->approved)
+                    <button wire:click="approve({{ $wish->id }})" class="text-xs px-3 py-1.5 bg-emerald-600 text-white hover:bg-emerald-700 transition-colors">
+                        ✓ Approve
+                    </button>
+                    @else
+                    <button wire:click="unapprove({{ $wish->id }})" class="text-xs px-3 py-1.5 border border-[var(--color-border)] hover:border-amber-300 text-[var(--color-muted)] transition-colors">
+                        Hide
+                    </button>
+                    @endif
+                    <button wire:click="openReply({{ $wish->id }})" class="text-xs px-3 py-1.5 border border-[var(--color-gold)]/40 hover:border-[var(--color-gold)] transition-colors" style="color: var(--color-gold);">
+                        {{ $wish->admin_reply ? '✎ Edit Reply' : '↩ Reply' }}
+                    </button>
+                    <button wire:click="confirmDelete({{ $wish->id }})" class="text-xs px-3 py-1.5 border border-red-100 text-red-400 hover:border-red-300 hover:text-red-600 transition-colors">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="text-center py-16 border border-[var(--color-border)] bg-white" style="color: var(--color-muted);">
+            <p class="text-sm">No {{ $filterTab !== 'all' ? $filterTab : '' }} wishes found.</p>
+        </div>
+        @endforelse
+    </div>
+
+    <div class="mt-4">{{ $wishes->links() }}</div>
+
+    {{-- Reply Modal --}}
+    @if($showReply)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+        <div class="bg-white max-w-md w-full p-8">
+            <h3 style="font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 1.25rem;">Reply to Wish</h3>
+            <textarea wire:model="replyText" rows="4" placeholder="Write your reply..." class="form-input resize-none mb-4"></textarea>
+            @error('replyText')<p class="text-red-500 text-xs mb-3">{{ $message }}</p>@enderror
+            <div class="flex gap-3">
+                <button wire:click="saveReply" class="btn-gold text-xs py-2.5 px-6">Save Reply</button>
+                <button wire:click="cancelReply" class="btn-outline-gold text-xs py-2.5 px-6">Cancel</button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Delete Modal --}}
     @if($showModal)
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
         <div class="bg-white max-w-sm w-full p-8">

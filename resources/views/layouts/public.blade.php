@@ -14,6 +14,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="bg-[var(--color-ivory)] text-[var(--color-obsidian)]">
 
@@ -52,12 +53,12 @@
             {{-- Mobile Toggle --}}
             <button @click="open = !open" class="md:hidden text-white p-1">
                 <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                <svg x-cloak x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
 
         {{-- Mobile Menu --}}
-        <div x-show="open" x-transition class="md:hidden bg-[var(--color-charcoal)] border-t border-white/10">
+        <div x-show="open" x-cloak x-transition class="md:hidden bg-[var(--color-charcoal)] border-t border-white/10">
             <div class="flex flex-col px-6 py-4 gap-4">
                 @foreach([
                     ['route' => 'home',      'label' => 'Home'],
@@ -102,8 +103,7 @@
     <div
         x-data="toastManager()"
         @toast.window="addToast($event.detail)"
-        class="fixed top-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"
-        style="max-width: 360px;"
+        style="position:fixed;top:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:0.75rem;pointer-events:none;max-width:360px;"
     >
         <template x-for="toast in toasts" :key="toast.id">
             <div
@@ -112,19 +112,36 @@
                 x-transition:enter-start="opacity-0 translate-x-4"
                 x-transition:enter-end="opacity-100 translate-x-0"
                 x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0"
-                class="pointer-events-auto flex items-start gap-3 px-4 py-3 shadow-lg"
-                :class="{
-                    'bg-[var(--color-obsidian)] border border-[var(--color-gold)]/40': toast.type === 'success',
-                    'bg-red-950 border border-red-500/40': toast.type === 'error',
-                    'bg-amber-950 border border-amber-500/40': toast.type === 'warning',
-                }"
+                style="pointer-events:auto;display:flex;align-items:center;gap:0.75rem;padding:0.875rem 1rem;box-shadow:0 4px 20px rgba(0,0,0,0.25);"
+                :style="toast.type === 'success'
+                    ? 'background:#0D0D0D; border-left: 3px solid #C9A84C;'
+                    : toast.type === 'error'
+                    ? 'background:#1a0505; border-left: 3px solid #ef4444;'
+                    : 'background:#1a1200; border-left: 3px solid #f59e0b;'"
             >
-                <span x-show="toast.type === 'success'" class="text-[var(--color-gold)] mt-0.5 shrink-0">✓</span>
-                <span x-show="toast.type === 'error'" class="text-red-400 mt-0.5 shrink-0">✕</span>
-                <span x-show="toast.type === 'warning'" class="text-amber-400 mt-0.5 shrink-0">!</span>
-                <p class="text-white text-sm font-light" x-text="toast.message"></p>
+                {{-- Icon circle --}}
+                <div style="flex-shrink:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;"
+                     :style="toast.type === 'success'
+                         ? 'background:rgba(201,168,76,0.15);'
+                         : toast.type === 'error'
+                         ? 'background:rgba(239,68,68,0.15);'
+                         : 'background:rgba(245,158,11,0.15);'">
+                    {{-- Success checkmark --}}
+                    <svg x-show="toast.type === 'success'" style="width:14px;height:14px;color:#C9A84C;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    {{-- Error X --}}
+                    <svg x-show="toast.type === 'error'" style="width:14px;height:14px;color:#ef4444;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    {{-- Warning ! --}}
+                    <svg x-show="toast.type === 'warning'" style="width:14px;height:14px;color:#f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    </svg>
+                </div>
+                {{-- Message --}}
+                <p style="color:#fff;font-size:0.875rem;font-weight:300;margin:0;line-height:1.5;" x-text="toast.message"></p>
             </div>
         </template>
     </div>

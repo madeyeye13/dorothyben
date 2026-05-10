@@ -202,10 +202,11 @@ class RsvpForm extends Component
         SendGuestRsvpEmail::dispatch($guest->fresh(), $emailType);
         SendCoupleNotificationEmail::dispatch($guest->fresh(), $this->isEditing ? 'updated' : 'new');
 
-        // Generate QR for display
+        // Generate QR for display (PNG base64)
         if ($guest->attending === 'yes' && $guest->qr_token) {
-            $url = route('verify', ['token' => $guest->qr_token]);
-            $this->qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(200)->generate($url);
+            $url          = route('verify', ['token' => $guest->qr_token]);
+            $qrPng        = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(250)->margin(2)->generate($url);
+            $this->qrCodeSvg = base64_encode($qrPng); // reusing property as base64
         }
 
         $this->submitted = true;
@@ -214,7 +215,20 @@ class RsvpForm extends Component
 
     public function render()
     {
-        if (SiteSetting::get('rsvp_enabled', '1') !== '1') {
+        $rsvpEnabled  = SiteSetting::get('rsvp_enabled', '1') === '1';
+        $rsvpDeadline = SiteSetting::get('rsvp_deadline', '');
+
+        // Auto-close if deadline has passed
+        if ($rsvpEnabled && $rsvpDeadline) {
+            try {
+                if (now()->isAfter(\Carbon\Carbon::parse($rsvpDeadline)->endOfDay())) {
+                    SiteSetting::set('rsvp_enabled', '0');
+                    $rsvpEnabled = false;
+                }
+            } catch (\Exception $e) {}
+        }
+
+        if (!$rsvpEnabled) {
             return view('livewire.public.rsvp-disabled');
         }
 

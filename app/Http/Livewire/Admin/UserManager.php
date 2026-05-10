@@ -16,6 +16,7 @@ class UserManager extends Component
     public string $email     = '';
     public string $password  = '';
     public string $password_confirmation = '';
+    public string $role      = 'admin'; // admin | scanner
     public ?int   $deleteId  = null;
     public bool   $showModal = false;
 
@@ -36,10 +37,12 @@ class UserManager extends Component
             $user         = User::findOrFail($id);
             $this->name   = $user->name;
             $this->email  = $user->email;
+            $this->role   = $user->getRoleNames()->first() ?? 'admin';
             $this->password = '';
             $this->password_confirmation = '';
         } else {
             $this->reset(['name', 'email', 'password', 'password_confirmation']);
+            $this->role = 'admin';
         }
         $this->showForm = true;
     }
@@ -50,7 +53,9 @@ class UserManager extends Component
         if ($this->editId) {
             $data = ['name' => $this->name, 'email' => $this->email];
             if ($this->password) $data['password'] = Hash::make($this->password);
-            User::findOrFail($this->editId)->update($data);
+            $user = User::findOrFail($this->editId);
+            $user->update($data);
+            $user->syncRoles([$this->role]);
             $msg = 'User updated.';
         } else {
             $user = User::create([
@@ -58,8 +63,8 @@ class UserManager extends Component
                 'email'    => $this->email,
                 'password' => Hash::make($this->password),
             ]);
-            $user->assignRole('admin');
-            $msg = 'Admin user created.';
+            $user->assignRole($this->role);
+            $msg = 'User created.';
         }
         $this->showForm = false;
         $this->dispatch('toast', message: $msg, type: 'success');

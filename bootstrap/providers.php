@@ -1,8 +1,7 @@
 <?php
 
-use App\Providers\AppServiceProvider;
-
 return [
-    \Livewire\LivewireServiceProvider::class,
-    AppServiceProvider::class,
+    App\Providers\AppServiceProvider::class,
+    Livewire\LivewireServiceProvider::class,
+    Spatie\Permission\PermissionServiceProvider::class,
 ];

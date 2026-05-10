@@ -210,41 +210,89 @@
 
             @else
             {{-- ─── SUCCESS STATE ─── --}}
-            <div class="text-center">
+            <div>
                 @if($attending === 'yes')
-                    <div class="mb-8">
-                        <div class="w-16 h-16 bg-[var(--color-gold)]/10 border border-[var(--color-gold)]/30 flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-[var(--color-gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+
+                {{-- Congrats header --}}
+                <div class="text-center mb-8">
+                    <div style="width:56px;height:56px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                        <svg style="width:28px;height:28px;color:var(--color-gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h2 class="section-title mb-3">We Can't Wait to See You!</h2>
+                    <p style="color: var(--color-muted); font-size: 0.9375rem; line-height: 1.8;">
+                        Thank you, <strong>{{ $full_name }}</strong>! Your RSVP is confirmed.
+                        A copy of this QR code has been sent to <strong>{{ $email }}</strong>.
+                    </p>
+                </div>
+
+                @if($qrCodeSvg)
+                {{-- QR Entry Pass Card --}}
+                <div style="max-width:320px;margin:0 auto 2rem;border:1px solid var(--color-border);background:#fff;">
+
+                    {{-- Card header --}}
+                    <div style="background:var(--color-obsidian);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;">
+                        <div>
+                            <p style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin:0 0 2px;">Entry Pass</p>
+                            <p style="font-family:var(--font-serif);color:#fff;font-size:1rem;margin:0;">Dorothy & Ben</p>
                         </div>
-                        <h2 class="section-title mb-3">We Can't Wait to See You!</h2>
-                        <p style="color: var(--color-muted); font-size: 0.9375rem; line-height: 1.8;">
-                            Thank you, <strong>{{ $full_name }}</strong>! Your RSVP has been confirmed.
-                            A confirmation email with your QR code has been sent to <strong>{{ $email }}</strong>.
-                        </p>
+                        <p style="font-size:11px;color:var(--color-gold);margin:0;letter-spacing:0.05em;">10 Jul 2026</p>
                     </div>
 
-                    @if($qrCodeSvg)
-                    <div class="inline-block">
-                        <div class="qr-wrapper mb-3">
-                            <p class="text-xs uppercase tracking-widest mb-3" style="color: var(--color-muted);">Your Entry Pass</p>
-                            {!! $qrCodeSvg !!}
-                            <p class="text-xs mt-3" style="color: var(--color-muted);">Present this QR code at the venue</p>
-                        </div>
-                        <p class="text-xs" style="color: var(--color-muted);">A copy has also been sent to your email.</p>
+                    {{-- QR code with download button overlay --}}
+                    <div style="position:relative;padding:1.25rem;background:#fff;">
+                        {{-- Download button — top right of QR --}}
+                        <a href="data:image/png;base64,{{ $qrCodeSvg }}"
+                           download="Dorothy-Ben-Entry-Pass.png"
+                           title="Download QR Code"
+                           style="position:absolute;top:12px;right:12px;width:32px;height:32px;background:var(--color-obsidian);display:flex;align-items:center;justify-content:center;z-index:2;text-decoration:none;"
+                           onmouseover="this.style.background='var(--color-gold)'"
+                           onmouseout="this.style.background='var(--color-obsidian)'">
+                            <svg style="width:15px;height:15px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                        </a>
+
+                        {{-- QR image --}}
+                        <img src="data:image/png;base64,{{ $qrCodeSvg }}"
+                             alt="Your Entry QR Code"
+                             style="width:100%;height:auto;display:block;image-rendering:pixelated;">
                     </div>
-                    @endif
+
+                    {{-- Guest name strip --}}
+                    <div style="padding:0.875rem 1.25rem;border-top:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between;">
+                        <div>
+                            <p style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-muted);margin:0 0 2px;">Guest</p>
+                            <p style="font-size:0.9375rem;font-weight:500;color:var(--color-obsidian);margin:0;">{{ $full_name }}</p>
+                        </div>
+                        <div style="text-align:right;">
+                            <p style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-muted);margin:0 0 2px;">Venue</p>
+                            <p style="font-size:11px;color:var(--color-muted);margin:0;">Abuja, Nigeria</p>
+                        </div>
+                    </div>
+
+                    {{-- Instruction --}}
+                    <div style="padding:0.625rem 1.25rem;background:#fafaf9;border-top:1px solid var(--color-border);">
+                        <p style="font-size:11px;color:var(--color-muted);text-align:center;margin:0;">
+                            Present this QR code at the venue entrance for check-in
+                        </p>
+                    </div>
+                </div>
+                @endif
 
                 @else
-                    <div class="mb-8">
-                        <div class="w-16 h-16 bg-gray-100 border border-gray-200 flex items-center justify-center mx-auto mb-4">
-                            <span class="text-2xl">💛</span>
-                        </div>
-                        <h2 class="section-title mb-3">We'll Miss You</h2>
-                        <p style="color: var(--color-muted); font-size: 0.9375rem; line-height: 1.8;">
-                            Thank you for letting us know, <strong>{{ $full_name }}</strong>. We'll miss having you there.
-                            You're still in our hearts on that special day.
-                        </p>
+                {{-- Not attending --}}
+                <div class="text-center mb-8">
+                    <div style="width:56px;height:56px;background:#f9f9f9;border:1px solid #e5e5e5;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                        <span style="font-size:1.5rem;">💛</span>
                     </div>
+                    <h2 class="section-title mb-3">We'll Miss You</h2>
+                    <p style="color: var(--color-muted); font-size: 0.9375rem; line-height: 1.8;">
+                        Thank you for letting us know, <strong>{{ $full_name }}</strong>. We'll miss having you there.
+                        You're still in our hearts on that special day.
+                    </p>
+                </div>
                 @endif
 
                 <div class="flex flex-col sm:flex-row gap-3 justify-center mt-8">

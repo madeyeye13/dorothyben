@@ -46,7 +46,12 @@
 
     {{-- Images Grid --}}
     <div class="admin-card border border-[var(--color-border)] bg-white p-6">
-        <h3 class="text-sm font-medium mb-4">Gallery Images ({{ $images->count() }})</h3>
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-medium">Gallery Images ({{ $total }})</h3>
+            @if($images->hasPages())
+            <p class="text-xs" style="color:var(--color-muted);">Page {{ $images->currentPage() }} of {{ $images->lastPage() }}</p>
+            @endif
+        </div>
 
         @if($images->count())
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
@@ -76,6 +81,28 @@
             </div>
             @endforeach
         </div>
+
+        {{-- Pagination --}}
+        @if($images->hasPages())
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--color-border);">
+            <p style="font-size:12px;color:var(--color-muted);">
+                Showing {{ $images->firstItem() }}–{{ $images->lastItem() }} of {{ $images->total() }}
+            </p>
+            <div style="display:flex;gap:6px;">
+                @if($images->onFirstPage())
+                    <span style="padding:5px 12px;border:1px solid var(--color-border);font-size:12px;opacity:0.4;cursor:not-allowed;">← Prev</span>
+                @else
+                    <button wire:click="previousPage" style="padding:5px 12px;border:1px solid var(--color-border);font-size:12px;cursor:pointer;background:none;">← Prev</button>
+                @endif
+                @if($images->hasMorePages())
+                    <button wire:click="nextPage" style="padding:5px 12px;border:1px solid var(--color-border);font-size:12px;cursor:pointer;background:none;">Next →</button>
+                @else
+                    <span style="padding:5px 12px;border:1px solid var(--color-border);font-size:12px;opacity:0.4;cursor:not-allowed;">Next →</span>
+                @endif
+            </div>
+        </div>
+        @endif
+
         @else
         <div class="text-center py-16" style="color: var(--color-muted);">
             <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>

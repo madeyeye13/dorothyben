@@ -5,8 +5,13 @@ return [
     'hashtag'           => '#DheeonlyoneforBen',
     'wedding_date'      => '10 July 2026',
     'general_location'  => 'Abuja, Nigeria',
-    'couple_email'      => 'doroegede@yahoo.com',
-    'pk_events_instagram' => 'https://www.instagram.com/pkevents', // Update with real handle
+    'couple_email'      => 'mikkygraphix14@gmail.com',
+    'pk_events_instagram' => 'https://www.instagram.com/pkevents_',
+
+    'colours_of_the_day' => [
+        ['name' => 'Touch of Green', 'hex' => '#4A7C59'],
+        ['name' => 'Gold',           'hex' => '#C9A84C'],
+    ],
 
     'church' => [
         'name'     => 'Our Lady Queen of Nigeria (OLQN) Catholic Church',

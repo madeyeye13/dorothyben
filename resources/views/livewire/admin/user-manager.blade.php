@@ -64,6 +64,25 @@
                     @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
+                    <label class="form-label">Role *</label>
+                    <div class="flex gap-6 mt-1">
+                        <label class="flex items-center gap-2 cursor-pointer text-sm">
+                            <input wire:model="role" type="radio" value="admin" class="accent-[var(--color-gold)]">
+                            <span>
+                                <span class="font-medium">Admin</span>
+                                <span style="color:var(--color-muted);font-size:12px;display:block;">Full access to all admin pages</span>
+                            </span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-sm">
+                            <input wire:model="role" type="radio" value="scanner" class="accent-[var(--color-gold)]">
+                            <span>
+                                <span class="font-medium">Scanner</span>
+                                <span style="color:var(--color-muted);font-size:12px;display:block;">QR scanner only — for venue staff</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div>
                     <label class="form-label">Password {{ $editId ? '(leave blank to keep current)' : '*' }}</label>
                     <input wire:model="password" type="password" placeholder="••••••••" class="form-input">
                     @error('password')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror

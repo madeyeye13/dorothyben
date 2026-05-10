@@ -1,32 +1,46 @@
-<div class="w-full max-w-md">
-    <div class="text-center mb-8">
-        <div class="w-14 h-14 mx-auto mb-4 flex items-center justify-center border border-[var(--color-gold)]/30">
-            <img src="{{ asset('images/D&B.png') }}" alt="D&B" class="h-10 w-auto" onerror="this.style.display='none'">
-        </div>
-        <h1 style="font-family: var(--font-serif); font-size: 1.75rem; color: #fff; margin-bottom: 0.25rem;">Admin Portal</h1>
-        <p style="color: rgba(255,255,255,0.4); font-size: 0.875rem;">Dorothy & Ben Wedding</p>
-    </div>
-
+<div>
     <form wire:submit.prevent="login" class="space-y-5">
         <div>
-            <label class="form-label" style="color: rgba(255,255,255,0.5);">Email Address</label>
-            <input wire:model="email" type="email" placeholder="doroegede@yahoo.com"
-                   class="form-input" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: #fff;">
-            @error('email')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+            <label class="form-label">Email Address</label>
+            <input wire:model="email"
+                   type="email"
+                   placeholder="Enter your email"
+                   class="form-input"
+                   autocomplete="email">
+            @error('email')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
+
         <div>
-            <label class="form-label" style="color: rgba(255,255,255,0.5);">Password</label>
-            <input wire:model="password" type="password" placeholder="••••••••"
-                   class="form-input" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: #fff;">
-            @error('password')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+            <label class="form-label">Password</label>
+            <input wire:model="password"
+                   type="password"
+                   placeholder="Enter your password"
+                   class="form-input"
+                   autocomplete="current-password">
+            @error('password')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
-        <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: rgba(255,255,255,0.5);">
-            <input wire:model="remember" type="checkbox" class="w-4 h-4 accent-[var(--color-gold)]">
-            Remember me
+
+        <label class="flex items-center gap-2.5 cursor-pointer">
+            <input wire:model="remember" type="checkbox"
+                   class="w-4 h-4 accent-[var(--color-gold)]">
+            <span class="text-sm" style="color: var(--color-muted);">Remember me</span>
         </label>
-        <button type="submit" class="btn-gold w-full" wire:loading.attr="disabled">
+
+        <button type="submit"
+                class="btn-gold w-full py-3"
+                wire:loading.attr="disabled">
             <span wire:loading.remove>Sign In</span>
-            <span wire:loading>Signing in...</span>
+            <span wire:loading class="flex items-center justify-center gap-2">
+                <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+                Signing in...
+            </span>
         </button>
     </form>
+
+    <p class="text-xs mt-8 text-center" style="color: var(--color-muted);">
+        Dorothy & Ben Wedding · Admin Access Only
+    </p>
 </div>

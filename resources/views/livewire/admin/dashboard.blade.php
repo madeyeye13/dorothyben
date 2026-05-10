@@ -1,4 +1,5 @@
 <div>
+<div>
     <div class="mb-8">
         <h2 style="font-family: var(--font-serif); font-size: 1.75rem;">Dashboard</h2>
         <p class="text-sm mt-1" style="color: var(--color-muted);">Overview of your wedding RSVPs and activity.</p>
@@ -67,6 +68,72 @@
                 </div>
             </div>
             @endforeach
+        </div>
+    </div>
+</div>
+
+    {{-- ── Email Queue Monitor ── --}}
+    <div class="grid md:grid-cols-2 gap-6 mt-8">
+
+        {{-- Pending Jobs --}}
+        <div class="admin-card border border-[var(--color-border)] bg-white p-5">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-medium">Email Queue</h3>
+                <span class="text-xs px-2 py-1 {{ $pendingJobs > 0 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700' }}">
+                    {{ $pendingJobs }} pending
+                </span>
+            </div>
+            @if($pendingJobs > 0)
+            <p class="text-xs" style="color:var(--color-muted);">
+                {{ $pendingJobs }} email(s) are queued to send. Run <code class="bg-gray-100 px-1">php artisan queue:work</code> or ensure your cron job is active.
+            </p>
+            @else
+            <p class="text-xs" style="color:var(--color-muted);">All emails have been processed. Queue is clear. ✓</p>
+            @endif
+        </div>
+
+        {{-- Failed Jobs --}}
+        <div class="admin-card border {{ $failedJobs->count() > 0 ? 'border-red-200' : 'border-[var(--color-border)]' }} bg-white p-5">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-medium">Failed Jobs</h3>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2 py-1 {{ $failedJobs->count() > 0 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-700' }}">
+                        {{ $failedJobs->count() }} failed
+                    </span>
+                    @if($failedJobs->count() > 0)
+                    <button wire:click="retryAllJobs"
+                            class="text-xs px-2 py-1 border border-[var(--color-border)] hover:border-[var(--color-gold)] transition-colors">
+                        Clear All
+                    </button>
+                    @endif
+                </div>
+            </div>
+            @if($failedJobs->count() > 0)
+            <div class="space-y-2">
+                @foreach($failedJobs as $job)
+                @php $payload = json_decode($job->payload, true); @endphp
+                <div class="flex items-start justify-between gap-3 py-2 border-b border-[var(--color-border)] last:border-0">
+                    <div class="min-w-0">
+                        <p class="text-xs font-medium truncate">
+                            {{ class_basename($payload['displayName'] ?? $payload['job'] ?? 'Unknown Job') }}
+                        </p>
+                        <p class="text-xs" style="color:var(--color-muted);">
+                            Failed {{ \Carbon\Carbon::parse($job->failed_at)->diffForHumans() }}
+                        </p>
+                        <p class="text-xs text-red-500 truncate mt-0.5" style="max-width:240px;">
+                            {{ Str::limit($job->exception, 80) }}
+                        </p>
+                    </div>
+                    <button wire:click="retryJob({{ $job->id }})"
+                            class="shrink-0 text-xs px-2 py-1 border border-red-200 text-red-500 hover:border-red-400 transition-colors">
+                        Remove
+                    </button>
+                </div>
+                @endforeach
+            </div>
+            @else
+            <p class="text-xs" style="color:var(--color-muted);">No failed jobs. All emails delivered successfully. ✓</p>
+            @endif
         </div>
     </div>
 </div>

@@ -42,8 +42,21 @@ class MemoriesManager extends Component
 
     public function render()
     {
+        $memoriesRaw  = Memory::latest()->paginate(20);
+
+        $memoriesData = $memoriesRaw->map(function ($m) {
+            return [
+                'url'      => $m->url,
+                'type'     => $m->type,
+                'caption'  => $m->caption ?? '',
+                'uploader' => $m->uploader_name ?? 'Anonymous',
+                'size'     => $m->file_size_human,
+            ];
+        })->values()->toArray();
+
         return view('livewire.admin.memories-manager', [
-            'memories' => Memory::latest()->paginate(20),
+            'memories'     => $memoriesRaw,
+            'memoriesData' => $memoriesData,
         ]);
     }
 }

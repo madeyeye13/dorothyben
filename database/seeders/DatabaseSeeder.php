@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         // ── Spatie Roles ──
         $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
         $admin      = Role::firstOrCreate(['name' => 'admin',       'guard_name' => 'web']);
+        $scanner    = Role::firstOrCreate(['name' => 'scanner',     'guard_name' => 'web']);
 
         // ── Primary Admin ──
         $user = User::firstOrCreate(
