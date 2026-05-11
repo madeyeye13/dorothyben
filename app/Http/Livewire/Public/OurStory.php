@@ -12,16 +12,16 @@ class OurStory extends Component
 {
     public function render()
     {
-        $accounts = BankAccount::where('active', true)->orderBy('sort_order')->get();
-        $heroUrl  = SiteSetting::get('hero_image')
-            ? asset('storage/' . SiteSetting::get('hero_image'))
+        $accounts      = \App\Models\BankAccount::where('active', true)->orderBy('sort_order')->get();
+        $paymentLinks  = \App\Models\PaymentLink::where('active', true)->orderBy('sort_order')->get();
+        $heroUrl       = \App\Models\SiteSetting::get('hero_image')
+            ? asset('storage/' . \App\Models\SiteSetting::get('hero_image'))
             : asset('images/hero-default.jpg');
 
         return view('livewire.public.our-story', [
-            'accounts' => $accounts,
-            'heroUrl'  => $heroUrl,
-            'pageTitle' => 'Our Story — Dorothy & Ben',
-            'metaDescription' => 'Read the beautiful love story of Dorothy and Ben, from their first meeting to their engagement and wedding day.',
+            'accounts'     => $accounts,
+            'paymentLinks' => $paymentLinks,
+            'heroUrl'      => $heroUrl,
         ]);
     }
 }

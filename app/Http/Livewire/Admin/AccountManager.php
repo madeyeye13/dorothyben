@@ -11,12 +11,14 @@ class AccountManager extends Component
 {
     public bool   $showForm      = false;
     public ?int   $editId        = null;
-    public string $currency      = 'NGN';
-    public string $bank_name     = '';
-    public string $account_name  = '';
-    public string $account_number = '';
-    public string $sort_code     = '';
-    public string $routing_number = '';
+    public string $currency           = 'NGN';
+    public string $bank_name          = '';
+    public string $account_name       = '';
+    public string $account_number     = '';
+    public string $sort_code          = '';
+    public string $routing_number     = '';
+    public string $payment_link       = '';
+    public string $payment_link_label = '';
     public ?int   $deleteId      = null;
     public bool   $showModal     = false;
 
@@ -37,14 +39,16 @@ class AccountManager extends Component
         $this->editId = $id;
         if ($id) {
             $acc = BankAccount::findOrFail($id);
-            $this->currency       = $acc->currency;
-            $this->bank_name      = $acc->bank_name;
-            $this->account_name   = $acc->account_name;
-            $this->account_number = $acc->account_number;
-            $this->sort_code      = $acc->sort_code ?? '';
-            $this->routing_number = $acc->routing_number ?? '';
+            $this->currency           = $acc->currency;
+            $this->bank_name          = $acc->bank_name;
+            $this->account_name       = $acc->account_name;
+            $this->account_number     = $acc->account_number;
+            $this->sort_code          = $acc->sort_code ?? '';
+            $this->routing_number     = $acc->routing_number ?? '';
+            $this->payment_link       = $acc->payment_link ?? '';
+            $this->payment_link_label = $acc->payment_link_label ?? '';
         } else {
-            $this->reset(['currency', 'bank_name', 'account_name', 'account_number', 'sort_code', 'routing_number']);
+            $this->reset(['currency','bank_name','account_name','account_number','sort_code','routing_number','payment_link','payment_link_label']);
             $this->currency = 'NGN';
         }
         $this->showForm = true;
@@ -54,12 +58,14 @@ class AccountManager extends Component
     {
         $this->validate();
         $data = [
-            'currency'       => $this->currency,
-            'bank_name'      => $this->bank_name,
-            'account_name'   => $this->account_name,
-            'account_number' => $this->account_number,
-            'sort_code'      => $this->sort_code ?: null,
-            'routing_number' => $this->routing_number ?: null,
+            'currency'           => $this->currency,
+            'bank_name'          => $this->bank_name,
+            'account_name'       => $this->account_name,
+            'account_number'     => $this->account_number,
+            'sort_code'          => $this->sort_code ?: null,
+            'routing_number'     => $this->routing_number ?: null,
+            'payment_link'       => $this->payment_link ?: null,
+            'payment_link_label' => $this->payment_link_label ?: null,
         ];
         if ($this->editId) {
             BankAccount::findOrFail($this->editId)->update($data);

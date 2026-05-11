@@ -85,6 +85,15 @@
                     <input wire:model="routing_number" type="text" placeholder="e.g. 021000021" class="form-input">
                 </div>
                 @endif
+                <div>
+                    <label class="form-label">Payment Link <span style="color:var(--color-muted);">(Optional — e.g. Zelle, CashApp, Wise)</span></label>
+                    <input wire:model="payment_link" type="url" placeholder="https://enroll.zellepay.com/..." class="form-input">
+                    <p class="text-xs mt-1" style="color:var(--color-muted);">If provided, a clickable button will appear on the gift section.</p>
+                </div>
+                <div>
+                    <label class="form-label">Payment Link Label <span style="color:var(--color-muted);">(Optional)</span></label>
+                    <input wire:model="payment_link_label" type="text" placeholder="e.g. Send via Zelle" class="form-input">
+                </div>
                 <div class="flex gap-3 pt-2">
                     <button type="submit" class="btn-gold text-xs py-2.5 px-6">Save Account</button>
                     <button type="button" wire:click="$set('showForm', false)" class="btn-outline-gold text-xs py-2.5 px-6">Cancel</button>

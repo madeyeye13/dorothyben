@@ -54,15 +54,16 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // ── Admin / Super-admin only ──
     Route::middleware(['admin.only'])->group(function () {
-        Route::get('/dashboard', \App\Livewire\Admin\Dashboard::class)->name('dashboard');
-        Route::get('/guests',    \App\Livewire\Admin\GuestList::class)->name('guests');
-        Route::get('/wishes',    \App\Livewire\Admin\WishesManager::class)->name('wishes');
-        Route::get('/gallery',   \App\Livewire\Admin\GalleryManager::class)->name('gallery');
-        Route::get('/memories',  \App\Livewire\Admin\MemoriesManager::class)->name('memories');
-        Route::get('/accounts',  \App\Livewire\Admin\AccountManager::class)->name('accounts');
-        Route::get('/settings',  \App\Livewire\Admin\SiteSettings::class)->name('settings');
-        Route::get('/users',     \App\Livewire\Admin\UserManager::class)->name('users');
-        Route::get('/profile',   \App\Livewire\Admin\ChangePassword::class)->name('profile');
+        Route::get('/dashboard',     \App\Livewire\Admin\Dashboard::class)->name('dashboard');
+        Route::get('/guests',        \App\Livewire\Admin\GuestList::class)->name('guests');
+        Route::get('/wishes',        \App\Livewire\Admin\WishesManager::class)->name('wishes');
+        Route::get('/gallery',       \App\Livewire\Admin\GalleryManager::class)->name('gallery');
+        Route::get('/memories',      \App\Livewire\Admin\MemoriesManager::class)->name('memories');
+        Route::get('/accounts',      \App\Livewire\Admin\AccountManager::class)->name('accounts');
+        Route::get('/payment-links', \App\Livewire\Admin\PaymentLinkManager::class)->name('payment-links');
+        Route::get('/settings',      \App\Livewire\Admin\SiteSettings::class)->name('settings');
+        Route::get('/users',         \App\Livewire\Admin\UserManager::class)->name('users');
+        Route::get('/profile',       \App\Livewire\Admin\ChangePassword::class)->name('profile');
 
         // Guest export — plain download, no Livewire
         Route::get('/guests/export', function () {

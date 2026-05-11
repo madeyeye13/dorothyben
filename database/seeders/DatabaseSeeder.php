@@ -39,29 +39,25 @@ class DatabaseSeeder extends Seeder
             SiteSetting::firstOrCreate(['key' => $key], ['value' => $value]);
         }
 
-        // ── Sample Bank Accounts ──
+        // ── Bank Accounts ──
         if (BankAccount::count() === 0) {
+            // NGN — Kuda
             BankAccount::create([
-                'currency'       => 'NGN',
-                'bank_name'      => 'Access Bank',
-                'account_name'   => 'Dorothy Egede',
-                'account_number' => '0123456789',
-                'sort_order'     => 1,
+                'currency'     => 'NGN',
+                'bank_name'    => 'Kuda Bank',
+                'account_name' => 'Dorothy Egede',
+                'account_number' => '2001718997',
+                'sort_order'   => 1,
             ]);
+            // USD — Zelle
             BankAccount::create([
-                'currency'       => 'NGN',
-                'bank_name'      => 'GTBank',
-                'account_name'   => 'Benjamin Okafor',
-                'account_number' => '0987654321',
-                'sort_order'     => 2,
-            ]);
-            BankAccount::create([
-                'currency'       => 'USD',
-                'bank_name'      => 'Domiciliary Account — Access Bank',
-                'account_name'   => 'Dorothy Egede',
-                'account_number' => '0112233445',
-                'routing_number' => '021000021',
-                'sort_order'     => 3,
+                'currency'           => 'USD',
+                'bank_name'          => 'Zelle',
+                'account_name'       => 'Ifechukwu Nwogu',
+                'account_number'     => '206-607-7405',
+                'payment_link'       => 'https://enroll.zellepay.com/',
+                'payment_link_label' => 'Send via Zelle',
+                'sort_order'         => 2,
             ]);
         }
     }

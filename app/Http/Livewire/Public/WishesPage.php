@@ -70,12 +70,14 @@ class WishesPage extends Component
         $myReactions = WishReaction::where('session_id', $sessionId)
             ->whereIn('wish_id', $wishes->pluck('id'))
             ->get()->groupBy('wish_id');
+        $accounts     = \App\Models\BankAccount::where('active', true)->orderBy('sort_order')->get();
+        $paymentLinks = \App\Models\PaymentLink::where('active', true)->orderBy('sort_order')->get();
 
         return view('livewire.public.wishes-page', [
-            'wishes'      => $wishes,
-            'myReactions' => $myReactions,
-            'pageTitle' => 'Wishes & Blessings — Dorothy & Ben',
-            'metaDescription' => 'Leave a heartfelt wish, blessing, or message for Dorothy and Ben as they begin their married life.',
+            'wishes'       => $wishes,
+            'myReactions'  => $myReactions,
+            'accounts'     => $accounts,
+            'paymentLinks' => $paymentLinks,
         ]);
     }
 }

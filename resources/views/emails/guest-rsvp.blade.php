@@ -91,21 +91,23 @@
         📍 {{ config('wedding.general_location') }}
       </div>
 
-      {{-- Colour of the Day --}}
+      {{-- Colour Palette for Guests --}}
       <div style="margin:24px 0;padding:20px 24px;border:1px solid #E2D9C8;background:#fafaf9;">
-        <p style="font-family:Arial,sans-serif;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:#C9A84C;margin:0 0 12px;">Colour of the Day</p>
-        <p style="font-family:Arial,sans-serif;font-size:0.875rem;color:#3a3a3a;margin:0 0 14px;">We'd love to see you dressed in our wedding colours:</p>
-        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-          @foreach(config('wedding.colours_of_the_day', []) as $colour)
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:32px;height:32px;border-radius:50%;background:{{ $colour['hex'] }};border:3px solid #fff;box-shadow:0 0 0 1px #E2D9C8;flex-shrink:0;"></div>
-            <div>
-              <p style="font-family:Arial,sans-serif;font-size:0.8125rem;font-weight:600;color:#0D0D0D;margin:0;">{{ $colour['name'] }}</p>
-              <p style="font-family:Arial,sans-serif;font-size:0.75rem;color:#6B6B6B;margin:0;">{{ $colour['hex'] }}</p>
-            </div>
+        <p style="font-family:Arial,sans-serif;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:#C9A84C;margin:0 0 10px;">Colour Palette for Guests</p>
+        <p style="font-family:Arial,sans-serif;font-size:0.875rem;color:#3a3a3a;margin:0 0 16px;">We'd love for you to celebrate with us in any of these beautiful colours:</p>
+        @php $colourGroups = collect(config('wedding.colours_of_the_day', []))->groupBy('group'); @endphp
+        @foreach($colourGroups as $groupName => $colours)
+        <p style="font-family:Arial,sans-serif;font-size:0.6875rem;letter-spacing:0.15em;text-transform:uppercase;color:#C9A84C;margin:14px 0 10px;">{{ $groupName }}</p>
+        <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:4px;">
+          @foreach($colours as $colour)
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;min-width:52px;">
+            <div style="width:40px;height:40px;border-radius:50%;background-color:{{ $colour['hex'] }};border:3px solid #fff;box-shadow:0 0 0 1px #E2D9C8;"></div>
+            <p style="font-family:Arial,sans-serif;font-size:10px;color:#3a3a3a;margin:0;text-align:center;line-height:1.3;">{{ $colour['name'] }}</p>
           </div>
           @endforeach
         </div>
+        @endforeach
+        <p style="font-family:Arial,sans-serif;font-size:0.8125rem;color:#6B6B6B;margin:14px 0 0;font-style:italic;">Mix and match — there are no wrong combinations 💚✨</p>
       </div>
 
       {{-- QR Code — saved as file, linked via public URL (base64 blocked by email clients) --}}

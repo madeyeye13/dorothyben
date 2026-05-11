@@ -67,10 +67,17 @@
                     </div>
                     @endif
 
-                    <div>
-                        <label class="form-label">Full Name *</label>
-                        <input wire:model.live.debounce.300ms="full_name" type="text" placeholder="e.g. Chukwuemeka Obi" class="form-input">
-                        @error('full_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                        <div>
+                            <label class="form-label">First Name *</label>
+                            <input wire:model.live.debounce.300ms="first_name" type="text" placeholder="e.g. Chukwuemeka" class="form-input">
+                            @error('first_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="form-label">Last Name *</label>
+                            <input wire:model.live.debounce.300ms="last_name" type="text" placeholder="e.g. Obi" class="form-input">
+                            @error('last_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
                     </div>
                     <div>
                         <label class="form-label">Email Address *</label>
@@ -116,29 +123,41 @@
                     <div>
                         <label class="flex items-center gap-3 cursor-pointer">
                             <input type="checkbox" wire:model.live="coming_with_someone" class="w-4 h-4 accent-[var(--color-gold)]">
-                            <span class="text-sm">I'm coming with someone</span>
+                            <span class="text-sm">I'm bringing my spouse / partner <span style="color:var(--color-muted);">(husband or wife)</span></span>
                         </label>
                     </div>
 
                     @if($coming_with_someone)
-                    <div class="space-y-4 pl-4 border-l-2 border-[var(--color-gold)]/30">
-                        <p class="text-xs uppercase tracking-widest" style="color: var(--color-muted);">Guest(s) you're bringing</p>
+                    <div class="pl-4 border-l-2 border-[var(--color-gold)]/30">
+                        <p class="text-xs uppercase tracking-widest mb-3" style="color: var(--color-muted);">Your plus one</p>
+                        @if(count($companions) === 0)
+                            {{-- Auto-add one slot --}}
+                            <div wire:init="addCompanion"></div>
+                        @endif
                         @foreach($companions as $i => $companion)
                         <div class="flex gap-3 items-start">
                             <div class="flex-1 space-y-2">
-                                <input wire:model="companions.{{ $i }}.name" type="text" placeholder="Full Name *" class="form-input">
-                                <input wire:model="companions.{{ $i }}.relation" type="text" placeholder="Relation (e.g. Spouse, Friend)" class="form-input" style="font-size: 0.875rem;">
+                                <input wire:model="companions.{{ $i }}.name" type="text"
+                                       placeholder="Spouse / Partner Full Name *" class="form-input">
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                                    <label class="flex items-center gap-2 cursor-pointer text-sm border border-[var(--color-border)] px-3 py-2
+                                        {{ ($companions[$i]['relation'] ?? '') === 'Husband' ? 'border-[var(--color-gold)] bg-[var(--color-gold)]/5' : '' }}">
+                                        <input type="radio" wire:model="companions.{{ $i }}.relation" value="Husband"
+                                               class="accent-[var(--color-gold)]"> Husband
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer text-sm border border-[var(--color-border)] px-3 py-2
+                                        {{ ($companions[$i]['relation'] ?? '') === 'Wife' ? 'border-[var(--color-gold)] bg-[var(--color-gold)]/5' : '' }}">
+                                        <input type="radio" wire:model="companions.{{ $i }}.relation" value="Wife"
+                                               class="accent-[var(--color-gold)]"> Wife
+                                    </label>
+                                </div>
                                 @error("companions.{$i}.name")<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                             </div>
-                            <button type="button" wire:click="removeCompanion({{ $i }})" class="mt-2 text-red-400 hover:text-red-500 p-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                            </button>
                         </div>
                         @endforeach
-                        <button type="button" wire:click="addCompanion" class="text-sm flex items-center gap-1" style="color: var(--color-gold);">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            Add another guest
-                        </button>
+                        <p class="text-xs mt-2" style="color:var(--color-muted);">
+                            * Each guest is allowed one plus one (spouse or partner only).
+                        </p>
                     </div>
                     @endif
                     @endif
@@ -222,7 +241,7 @@
                     </div>
                     <h2 class="section-title mb-3">We Can't Wait to See You!</h2>
                     <p style="color: var(--color-muted); font-size: 0.9375rem; line-height: 1.8;">
-                        Thank you, <strong>{{ $full_name }}</strong>! Your RSVP is confirmed.
+                        Thank you, <strong>{{ $first_name }} {{ $last_name }}</strong>! Your RSVP is confirmed.
                         A copy of this QR code has been sent to <strong>{{ $email }}</strong>.
                     </p>
                 </div>
@@ -264,7 +283,7 @@
                     <div style="padding:0.875rem 1.25rem;border-top:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between;">
                         <div>
                             <p style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-muted);margin:0 0 2px;">Guest</p>
-                            <p style="font-size:0.9375rem;font-weight:500;color:var(--color-obsidian);margin:0;">{{ $full_name }}</p>
+                            <p style="font-size:0.9375rem;font-weight:500;color:var(--color-obsidian);margin:0;">{{ $first_name }} {{ $last_name }}</p>
                         </div>
                         <div style="text-align:right;">
                             <p style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-muted);margin:0 0 2px;">Venue</p>
@@ -289,7 +308,7 @@
                     </div>
                     <h2 class="section-title mb-3">We'll Miss You</h2>
                     <p style="color: var(--color-muted); font-size: 0.9375rem; line-height: 1.8;">
-                        Thank you for letting us know, <strong>{{ $full_name }}</strong>. We'll miss having you there.
+                        Thank you for letting us know, <strong>{{ $first_name }} {{ $last_name }}</strong>. We'll miss having you there.
                         You're still in our hearts on that special day.
                     </p>
                 </div>

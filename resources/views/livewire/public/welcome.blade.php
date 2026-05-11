@@ -66,40 +66,61 @@
     </section>
 
     {{-- Colour of the Day --}}
-    <section style="padding: 5rem 1.5rem; background: #fff; border-top: 1px solid #E2D9C8; text-align: center;">
-        <div style="max-width: 640px; margin: 0 auto;">
+    <section style="padding: 5rem 1.5rem; background: #fff; border-top: 1px solid #E2D9C8;">
+        <div style="max-width: 780px; margin: 0 auto; text-align: center;">
             <p style="font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-gold); margin-bottom: 0.75rem;">
                 Dress Code
             </p>
-            <h2 style="font-family: var(--font-serif); font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 400; color: var(--color-obsidian); margin-bottom: 1rem;">
-                Colour of the Day
+            <h2 style="font-family: var(--font-serif); font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 400; color: var(--color-obsidian); margin-bottom: 0.75rem;">
+                Colour Palette for Guests
             </h2>
             <p style="color: var(--color-muted); font-size: 0.9375rem; margin-bottom: 3rem; line-height: 1.8;">
-                We'd love for you to celebrate with us dressed in our wedding colours.
+                We'd love for you to celebrate with us dressed in any of these beautiful colours.
             </p>
 
-            {{-- Colour swatches --}}
-            <div style="display: flex; align-items: flex-start; justify-content: center; gap: 4rem; flex-wrap: wrap;">
+            @php
+                $colourGroups = collect(config('wedding.colours_of_the_day', []))->groupBy('group');
+            @endphp
 
-                {{-- Touch of Green --}}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.875rem;">
-                    <div style="width: 88px; height: 88px; border-radius: 50%; background-color: #4A7C59; box-shadow: 0 0 0 3px #fff, 0 0 0 5px #4A7C59, 0 8px 20px rgba(74,124,89,0.25);"></div>
-                    <div>
-                        <p style="font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 500; color: var(--color-obsidian); margin: 0 0 0.25rem;">Touch of Green</p>
-                        <p style="font-family: var(--font-sans); font-size: 0.8125rem; color: var(--color-muted); margin: 0; letter-spacing: 0.05em;">#4A7C59</p>
-                    </div>
+            @foreach($colourGroups as $groupName => $colours)
+            <div style="margin-bottom: 3rem;">
+                {{-- Group label --}}
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <div style="flex: 1; height: 1px; background: #E2D9C8;"></div>
+                    <p style="font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-gold); white-space: nowrap;">
+                        {{ $groupName }}
+                    </p>
+                    <div style="flex: 1; height: 1px; background: #E2D9C8;"></div>
                 </div>
 
-                {{-- Gold --}}
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.875rem;">
-                    <div style="width: 88px; height: 88px; border-radius: 50%; background-color: #C9A84C; box-shadow: 0 0 0 3px #fff, 0 0 0 5px #C9A84C, 0 8px 20px rgba(201,168,76,0.25);"></div>
-                    <div>
-                        <p style="font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 500; color: var(--color-obsidian); margin: 0 0 0.25rem;">Gold</p>
-                        <p style="font-family: var(--font-sans); font-size: 0.8125rem; color: var(--color-muted); margin: 0; letter-spacing: 0.05em;">#C9A84C</p>
+                {{-- Swatches --}}
+                <div style="display: flex; align-items: flex-start; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                    @foreach($colours as $colour)
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem; min-width: 72px;">
+                        <div style="
+                            width: 72px;
+                            height: 72px;
+                            border-radius: 50%;
+                            background-color: {{ $colour['hex'] }};
+                            box-shadow: 0 0 0 3px #fff, 0 0 0 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.12);
+                        "></div>
+                        <div>
+                            <p style="font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; color: var(--color-obsidian); margin: 0 0 2px; text-align: center;">
+                                {{ $colour['name'] }}
+                            </p>
+                            <p style="font-family: var(--font-sans); font-size: 0.6875rem; color: var(--color-muted); margin: 0; letter-spacing: 0.04em; text-align: center;">
+                                {{ $colour['hex'] }}
+                            </p>
+                        </div>
                     </div>
+                    @endforeach
                 </div>
-
             </div>
+            @endforeach
+
+            <p style="font-size: 0.875rem; color: var(--color-muted); margin-top: 1rem; font-style: italic;">
+                Mix and match across the palette — there are no wrong combinations 💚✨
+            </p>
         </div>
     </section>
 

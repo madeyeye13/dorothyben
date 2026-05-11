@@ -19,7 +19,8 @@ class RsvpForm extends Component
     public int    $totalSteps = 4;
 
     // Step 1
-    public string $full_name = '';
+    public string $first_name = '';
+    public string $last_name  = '';
     public string $email     = '';
     public string $phone     = '';
 
@@ -47,7 +48,8 @@ class RsvpForm extends Component
         $rules = [];
         if ($this->step === 1) {
             $rules = [
-                'full_name' => 'required|min:2|max:120',
+                'first_name' => 'required|min:2|max:60',
+                'last_name'  => 'required|min:2|max:60',
                 'email'     => 'required|email|max:120',
                 'phone'     => 'nullable|max:30',
             ];
@@ -67,6 +69,8 @@ class RsvpForm extends Component
     public function mount(): void
     {
         $this->companions = [];
+        $this->first_name = '';
+        $this->last_name  = '';
     }
 
     public function updatedEmail(): void
@@ -77,7 +81,7 @@ class RsvpForm extends Component
             $existing = Guest::where('email', strtolower(trim($this->email)))->first();
             if ($existing) {
                 $this->emailExists  = true;
-                $this->existingName = $existing->full_name;
+                $this->existingName = $existing->first_name . ' ' . $existing->last_name;
             }
         }
     }
@@ -89,7 +93,8 @@ class RsvpForm extends Component
 
         $this->isEditing   = true;
         $this->editGuestId = $guest->id;
-        $this->full_name   = $guest->full_name;
+        $this->first_name  = $guest->first_name ?? '';
+        $this->last_name   = $guest->last_name ?? '';
         $this->phone       = $guest->phone ?? '';
         $this->attending   = $guest->attending;
         $this->relationship = $guest->relationship ?? [];
@@ -109,7 +114,7 @@ class RsvpForm extends Component
             $existing = Guest::where('email', strtolower(trim($this->email)))->first();
             if ($existing) {
                 $this->emailExists  = true;
-                $this->existingName = $existing->full_name;
+                $this->existingName = $existing->first_name . ' ' . $existing->last_name;
                 return;
             }
         }
@@ -126,7 +131,9 @@ class RsvpForm extends Component
 
     public function addCompanion(): void
     {
-        $this->companions[] = ['name' => '', 'relation' => ''];
+        if (count($this->companions) < 1) {
+            $this->companions[] = ['name' => '', 'relation' => ''];
+        }
     }
 
     public function removeCompanion(int $index): void
@@ -154,7 +161,8 @@ class RsvpForm extends Component
             $prevAttending = $guest->attending;
 
             $guest->update([
-                'full_name'      => trim($this->full_name),
+                'first_name'     => trim($this->first_name),
+                'last_name'      => trim($this->last_name),
                 'phone'          => $this->phone,
                 'attending'      => $this->attending,
                 'decline_reason' => $this->attending === 'no' ? $this->decline_reason : null,
@@ -168,7 +176,8 @@ class RsvpForm extends Component
             $guest->companions()->delete();
         } else {
             $guest = Guest::create([
-                'full_name'      => trim($this->full_name),
+                'first_name'     => trim($this->first_name),
+                'last_name'      => trim($this->last_name),
                 'email'          => strtolower(trim($this->email)),
                 'phone'          => $this->phone,
                 'attending'      => $this->attending,

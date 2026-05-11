@@ -11,7 +11,8 @@ class Guest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'full_name', 'email', 'phone', 'attending',
+        'first_name', 'last_name', 'full_name',
+        'email', 'phone', 'attending',
         'decline_reason', 'relationship', 'qr_token', 'qr_used', 'qr_used_at',
     ];
 
@@ -20,6 +21,16 @@ class Guest extends Model
         'qr_used'      => 'boolean',
         'qr_used_at'   => 'datetime',
     ];
+
+    // Auto-sync full_name when saving
+    protected static function booted(): void
+    {
+        static::saving(function (Guest $guest) {
+            if ($guest->first_name || $guest->last_name) {
+                $guest->full_name = trim($guest->first_name . ' ' . $guest->last_name);
+            }
+        });
+    }
 
     public function companions()
     {
@@ -31,7 +42,6 @@ class Guest extends Model
         do {
             $token = Str::random(32);
         } while (static::where('qr_token', $token)->exists());
-
         return $token;
     }
 

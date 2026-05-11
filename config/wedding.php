@@ -3,14 +3,25 @@
 return [
     'couple_names'      => 'Dorothy & Ben',
     'hashtag'           => '#DheeonlyoneforBen',
-    'wedding_date'      => '10 July 2026',
+    'wedding_date'      => 'Friday, 10 July 2026',
     'general_location'  => 'Abuja, Nigeria',
-    'couple_email'      => 'mikkygraphix14@gmail.com',
-    'pk_events_instagram' => 'https://www.instagram.com/pkevents_',
+    'couple_email'      => 'doroegede@yahoo.com',
+    'pk_events_instagram' => 'https://www.instagram.com/pkevents',
 
     'colours_of_the_day' => [
-        ['name' => 'Touch of Green', 'hex' => '#4A7C59'],
-        ['name' => 'Gold',           'hex' => '#C9A84C'],
+        // Shades of Green
+        ['name' => 'Emerald',      'hex' => '#0D4A2F', 'group' => 'Shades of Green'],
+        ['name' => 'Forest Green', 'hex' => '#2D3F2A', 'group' => 'Shades of Green'],
+        ['name' => 'Olive',        'hex' => '#6B7A45', 'group' => 'Shades of Green'],
+        ['name' => 'Sage',         'hex' => '#A8B89A', 'group' => 'Shades of Green'],
+        ['name' => 'Teal Green',   'hex' => '#0A6B6B', 'group' => 'Shades of Green'],
+        ['name' => 'Moss',         'hex' => '#4A5E28', 'group' => 'Shades of Green'],
+        // Golds & Neutrals
+        ['name' => 'Champagne Gold', 'hex' => '#E8D5A3', 'group' => 'Golds & Neutrals'],
+        ['name' => 'Antique Gold',   'hex' => '#C9943A', 'group' => 'Golds & Neutrals'],
+        ['name' => 'Nude',           'hex' => '#D4A68A', 'group' => 'Golds & Neutrals'],
+        ['name' => 'Beige',          'hex' => '#C9B49A', 'group' => 'Golds & Neutrals'],
+        ['name' => 'Soft Gold',      'hex' => '#D4B865', 'group' => 'Golds & Neutrals'],
     ],
 
     'church' => [
