@@ -18,20 +18,58 @@
             </div>
             @endif
 
-            <form wire:submit.prevent="uploadHero" class="space-y-4">
+            <div class="space-y-4">
                 <div>
                     <label class="form-label">Upload New Hero Image</label>
                     <input wire:model="hero_image" type="file" accept="image/*" class="form-input text-sm">
                     @error('hero_image')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
-                <div wire:loading.remove wire:target="uploadHero">
-                    <button type="submit" class="btn-gold text-xs">Update Hero Image</button>
+                <div>
+                    <button wire:click="uploadHero" wire:loading.attr="disabled" wire:target="hero_image,uploadHero" class="btn-gold text-xs">
+                        <span wire:loading.remove wire:target="uploadHero">Update Hero Image</span>
+                        <span wire:loading wire:target="uploadHero">Uploading...</span>
+                    </button>
+                    <span wire:loading wire:target="hero_image" class="text-xs ml-3" style="color:var(--color-muted);">Processing image...</span>
                 </div>
-                <div wire:loading wire:target="uploadHero" class="text-sm flex items-center gap-2" style="color: var(--color-gold);">
-                    <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                    Uploading...
+            </div>
+        </div>
+
+        {{-- Our Story Hero Image --}}
+        <div class="admin-card border border-[var(--color-border)] bg-white p-6">
+            <h3 class="text-sm font-medium mb-1">Our Story Hero Image</h3>
+            <p class="text-xs mb-5" style="color: var(--color-muted);">
+                Separate hero image for the Our Story page. If not set, the home page hero image will be used as fallback.
+            </p>
+
+            @if($currentOurStoryHero)
+            <div class="mb-4 relative inline-block">
+                <img src="{{ asset('storage/' . $currentOurStoryHero) }}" alt="Our Story Hero"
+                     class="h-40 w-auto object-cover border border-[var(--color-border)]">
+                <p class="text-xs mt-1" style="color: var(--color-muted);">Current Our Story hero</p>
+            </div>
+            @else
+            <div class="mb-4 p-3 border border-dashed border-[var(--color-border)] text-center" style="color:var(--color-muted);">
+                <p class="text-xs">No separate image set — using home page hero as fallback.</p>
+            </div>
+            @endif
+
+            <div class="space-y-4">
+                <div>
+                    <label class="form-label">Upload Our Story Hero Image</label>
+                    <input wire:model="our_story_hero_image" type="file" accept="image/*" class="form-input text-sm">
+                    @error('our_story_hero_image')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
-            </form>
+                <div>
+                    <button wire:click="uploadOurStoryHero"
+                            wire:loading.attr="disabled"
+                            wire:target="our_story_hero_image,uploadOurStoryHero"
+                            class="btn-gold text-xs">
+                        <span wire:loading.remove wire:target="uploadOurStoryHero">Update Our Story Image</span>
+                        <span wire:loading wire:target="uploadOurStoryHero">Uploading...</span>
+                    </button>
+                    <span wire:loading wire:target="our_story_hero_image" class="text-xs ml-3" style="color:var(--color-muted);">Processing image...</span>
+                </div>
+            </div>
         </div>
 
         {{-- RSVP Toggle --}}

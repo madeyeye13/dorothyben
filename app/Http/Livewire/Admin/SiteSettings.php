@@ -20,7 +20,9 @@ class SiteSettings extends Component
     public string $memories_activation_date = '';
     public string $venue_pin                = '';
     public $hero_image                      = null;
+    public $our_story_hero_image            = null;
     public string $currentHero              = '';
+    public string $currentOurStoryHero      = '';
 
     public function mount(): void
     {
@@ -31,6 +33,7 @@ class SiteSettings extends Component
         $this->memories_activation_date = SiteSetting::get('memories_activation_date', '');
         $this->venue_pin                = SiteSetting::get('venue_pin', '');
         $this->currentHero              = SiteSetting::get('hero_image', '');
+        $this->currentOurStoryHero      = SiteSetting::get('our_story_hero', '');
     }
 
     public function saveRsvp(): void
@@ -82,7 +85,26 @@ class SiteSettings extends Component
         SiteSetting::set('hero_image', $path);
         $this->currentHero = $path;
         $this->hero_image  = null;
-        $this->dispatch('toast', message: 'Hero image updated.', type: 'success');
+        $this->dispatch('toast', message: 'Home page hero image updated.', type: 'success');
+    }
+
+    public function uploadOurStoryHero(): void
+    {
+        $this->validate(['our_story_hero_image' => 'required|image|max:10240']);
+
+        if ($this->currentOurStoryHero) {
+            Storage::disk('public')->delete($this->currentOurStoryHero);
+        }
+
+        $img  = \Intervention\Image\Laravel\Facades\Image::read($this->our_story_hero_image->getRealPath());
+        $img->scaleDown(2560, 1440);
+        $path = 'hero/' . uniqid() . '.jpg';
+        Storage::disk('public')->put($path, $img->toJpeg(85));
+
+        SiteSetting::set('our_story_hero', $path);
+        $this->currentOurStoryHero  = $path;
+        $this->our_story_hero_image = null;
+        $this->dispatch('toast', message: 'Our Story hero image updated.', type: 'success');
     }
 
     public function render()

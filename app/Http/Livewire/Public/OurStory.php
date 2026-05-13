@@ -14,8 +14,11 @@ class OurStory extends Component
     {
         $accounts      = \App\Models\BankAccount::where('active', true)->orderBy('sort_order')->get();
         $paymentLinks  = \App\Models\PaymentLink::where('active', true)->orderBy('sort_order')->get();
-        $heroUrl       = \App\Models\SiteSetting::get('hero_image')
-            ? asset('storage/' . \App\Models\SiteSetting::get('hero_image'))
+        $ourStoryHero  = \App\Models\SiteSetting::get('our_story_hero', '');
+        $mainHero      = \App\Models\SiteSetting::get('hero_image', '');
+        $heroPath      = $ourStoryHero ?: $mainHero;
+        $heroUrl       = $heroPath
+            ? asset('storage/' . $heroPath)
             : asset('images/hero-default.jpg');
 
         return view('livewire.public.our-story', [
