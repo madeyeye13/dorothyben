@@ -14,6 +14,7 @@ Route::get('/our-story', \App\Livewire\Public\OurStory::class)->name('our-story'
 Route::get('/wishes', \App\Livewire\Public\WishesPage::class)->name('wishes');
 Route::get('/gallery', \App\Livewire\Public\GalleryPage::class)->name('gallery');
 Route::get('/memories', \App\Livewire\Public\MemoriesPage::class)->name('memories');
+Route::get('/gifts', \App\Livewire\Public\GiftsPage::class)->name('gifts');
 Route::get('/verify/{token}', \App\Livewire\Public\VerifyGuest::class)->name('verify');
 
 /*

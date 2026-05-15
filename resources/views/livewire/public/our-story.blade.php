@@ -119,100 +119,22 @@
         </div>
     </section>
 
-    {{-- Gift Section --}}
-    <section class="py-24" style="background: var(--color-ivory);">
-        <div class="max-w-3xl mx-auto px-6">
-            <div class="text-center mb-14">
-                <p class="section-eyebrow mb-3">Care to Gift Us?</p>
-                <h2 class="section-title mb-4">Gift Information</h2>
-                <p style="color: var(--color-muted); max-width: 480px; margin: 0 auto; line-height: 1.8; font-size: 0.9375rem;">
-                    Your presence is the greatest gift of all. However, if you would like to bless us further, below are our account details.
-                </p>
-            </div>
 
-            @if($accounts->count())
-            <div class="space-y-4">
-                @foreach($accounts->groupBy('currency') as $currency => $currAccounts)
-                <div>
-                    <p class="text-xs uppercase tracking-widest mb-4 flex items-center gap-3" style="color: var(--color-gold);">
-                        <span>{{ $currency === 'NGN' ? '🇳🇬 Nigerian Naira' : ($currency === 'USD' ? '🇺🇸 US Dollar' : '🇬🇧 British Pound') }}</span>
-                        <span class="flex-1 h-px bg-[var(--color-border)]"></span>
-                    </p>
-                    @foreach($currAccounts as $account)
-                    <div class="border border-[var(--color-border)] p-6 mb-3 bg-white">
-                        <div class="flex items-start justify-between gap-4">
-                            <div class="space-y-1 flex-1">
-                                <p class="font-medium text-sm">{{ $account->bank_name }}</p>
-                                <p style="color: var(--color-muted); font-size: 0.875rem;">{{ $account->account_name }}</p>
-                                @if($account->account_number)
-                                <p style="font-family: var(--font-serif); font-size: 1.5rem; letter-spacing: 0.05em; color: var(--color-obsidian); margin-top: 0.5rem;">
-                                    {{ $account->account_number }}
-                                </p>
-                                @endif
-                                @if($account->sort_code)
-                                <p style="color: var(--color-muted); font-size: 0.8125rem;">Sort Code: {{ $account->sort_code }}</p>
-                                @endif
-                                @if($account->routing_number)
-                                <p style="color: var(--color-muted); font-size: 0.8125rem;">Routing: {{ $account->routing_number }}</p>
-                                @endif
-                            </div>
-                            @if($account->account_number)
-                            <button onclick="copyToClipboard('{{ $account->account_number }}')"
-                                    class="shrink-0 border border-[var(--color-border)] hover:border-[var(--color-gold)] p-2.5 transition-colors group"
-                                    title="Copy account number">
-                                <svg class="w-4 h-4 group-hover:text-[var(--color-gold)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                </svg>
-                            </button>
-                            @endif
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @endforeach
-            </div>
-            @endif
-
-            {{-- Payment Links — separate from bank accounts --}}
-            @if(isset($paymentLinks) && $paymentLinks->count())
-            <div class="mt-8">
-                <p class="text-xs uppercase tracking-widest mb-4 flex items-center gap-3" style="color: var(--color-gold);">
-                    <span>🔗 Send Money Online</span>
-                    <span class="flex-1 h-px bg-[var(--color-border)]"></span>
-                </p>
-                <div class="space-y-3">
-                    @foreach($paymentLinks as $link)
-                    <div class="border border-[var(--color-border)] p-5 bg-white flex items-center justify-between gap-4 flex-wrap">
-                        <div>
-                            <div class="flex items-center gap-2 flex-wrap">
-                                @if($link->currency_tag)
-                                <span class="text-xs px-2 py-0.5" style="border:1px solid var(--color-gold);color:var(--color-gold);">{{ $link->currency_tag }}</span>
-                                @endif
-                                <p class="font-medium text-sm">{{ $link->title }}</p>
-                            </div>
-                            @if($link->description)
-                            <p class="text-xs mt-0.5" style="color:var(--color-muted);">{{ $link->description }}</p>
-                            @endif
-                        </div>
-                        <a href="{{ $link->url }}" target="_blank" rel="noopener"
-                           class="btn-gold text-xs py-2 px-5 inline-flex items-center gap-2 shrink-0">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-                            </svg>
-                            Send Gift
-                        </a>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-
-            {{-- Empty state --}}
-            @if(!$accounts->count() && (!isset($paymentLinks) || !$paymentLinks->count()))
-            <div class="text-center py-10 border border-[var(--color-border)]" style="color: var(--color-muted);">
-                <p class="text-sm">Account details coming soon.</p>
-            </div>
-            @endif
+    {{-- Gift nudge --}}
+    <section class="py-16" style="background: var(--color-ivory);">
+        <div class="max-w-xl mx-auto px-6 text-center">
+            <p class="section-eyebrow mb-3">Care to Gift Us?</p>
+            <h2 class="section-title mb-4">Gift Information</h2>
+            <p style="color: var(--color-muted); line-height: 1.8; font-size: 0.9375rem; margin-bottom: 2rem;">
+                Your presence is the greatest gift of all. However, if you'd like to bless us further,
+                we have a dedicated page with all our gift details.
+            </p>
+            <a href="{{ route('gifts') }}" class="btn-gold text-xs py-3 px-8 inline-flex items-center gap-2">
+                <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
+                </svg>
+                View Gift Details
+            </a>
         </div>
     </section>
 </div>

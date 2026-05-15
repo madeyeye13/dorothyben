@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@isset($pageTitle){{ $pageTitle }}@else Dorothy & Ben — {{ config('wedding.wedding_date') }}@endisset</title>
-    <meta name="description" content="@isset($metaDescription){{ $metaDescription }}@else Join us as Dorothy & Ben celebrate their wedding on {{ config('wedding.wedding_date') }} in {{ config('wedding.general_location') }}@endisset">
+    <title>Dorothy & Ben — {{ config('wedding.wedding_date') }}</title>
+    <meta name="description" content="Join us as Dorothy & Ben celebrate their wedding on {{ config('wedding.wedding_date') }} in {{ config('wedding.general_location') }}">
     <link rel="icon" href="{{ asset('images/D&B.png') }}" type="image/png">
 
     {{-- Google Fonts --}}
@@ -36,6 +36,7 @@
                     ['route' => 'wishes',    'label' => 'Wishes'],
                     ['route' => 'gallery',   'label' => 'Gallery'],
                     ['route' => 'memories',  'label' => 'Memories'],
+                    ['route' => 'gifts',     'label' => 'Gift Us'],
                 ] as $item)
                 <a href="{{ route($item['route']) }}"
                    class="text-white/80 hover:text-[var(--color-gold)] transition-colors text-sm tracking-wide font-light
@@ -67,6 +68,7 @@
                     ['route' => 'wishes',    'label' => 'Wishes'],
                     ['route' => 'gallery',   'label' => 'Gallery'],
                     ['route' => 'memories',  'label' => 'Memories'],
+                    ['route' => 'gifts',     'label' => 'Gift Us'],
                 ] as $item)
                 <a href="{{ route($item['route']) }}" @click="open = false"
                    class="text-white/80 hover:text-[var(--color-gold)] text-sm py-1 tracking-wide">
@@ -89,7 +91,7 @@
             <p class="text-sm mb-1" style="letter-spacing: 0.1em;">{{ config('wedding.hashtag') }}</p>
             <p class="text-sm mb-6">{{ config('wedding.wedding_date') }} · {{ config('wedding.general_location') }}</p>
             <div class="border-t border-white/10 pt-6 flex flex-col items-center gap-1">
-                <p class="text-xs text-white/40">Website created with love by <a href="https://api.whatsapp.com/send/?phone=2349079671373&text&type=phone_number&app_absent=0" target="_blank" rel="noopener" class="text-[var(--color-gold-light)] hover:underline">Bezalel Koncept</a></p>
+                <p class="text-xs text-white/40">Website created with love by <span class="text-[var(--color-gold-light)]">Bezalel Koncept</span></p>
                 <p class="text-xs text-white/40">
                     Event Planner:
                     <a href="{{ config('wedding.pk_events_instagram') }}" target="_blank" rel="noopener"
